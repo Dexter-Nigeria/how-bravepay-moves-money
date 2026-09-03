@@ -1,24 +1,36 @@
-# How BravePay Moves Money
+# BravePay Briefings
 
-A plain-language briefing on how BravePay works with its core banking provider and
-with NIBSS, Nigeria's inter-bank payment infrastructure, to move money between banks.
+Plain-language briefings on the BravePay platform: what it is, how it works, and
+how it connects to Nigeria's inter-bank payment infrastructure.
 
 ## Two briefings
 
 | | For | Read |
 |---|---|---|
+| **The BravePay Platform** | Management — the whole product, not just banking | https://dexter-nigeria.github.io/how-bravepay-moves-money/report.html |
 | **How BravePay Moves Money** | Anyone, no background needed | https://dexter-nigeria.github.io/how-bravepay-moves-money/ |
 | **Building BravePay on BankOne** | Product, operations, management | https://dexter-nigeria.github.io/how-bravepay-moves-money/plan.html |
 
-The first explains the arrangement from scratch. The second covers what changes,
-what we stop building, roughly what it takes, and what has to be answered first.
+Three levels of the same story. The **report** covers all five systems, what is built,
+what is measured and what comes next. The **explainer** starts from zero and describes
+how money moves. The **plan** covers what changes when we move onto a core banking
+platform, what it takes and what has to be answered first.
 
 ## Who it's for
 
 Anyone who needs to understand the arrangement without a technical background —
 board, operations, commercial, customer support, new joiners.
 
-## What the first briefing covers
+## What the report covers
+
+- **The five systems** and how they fit together
+- **What a customer can do** today, and what is waiting on the banking engine
+- **The business tools** — invoicing, payroll, expenses — and why they matter commercially
+- **Where we are**, honestly: what is running, what is next
+- **Quality**, measured before and after
+- **What needs deciding** by management
+
+## What the explainer covers
 
 - **Who does what** — BravePay as the shopfront, the core banking system as the back
   office, NIBSS as the road network between banks

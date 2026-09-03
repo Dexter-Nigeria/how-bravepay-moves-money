@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building BravePay on BankOne</title>
+<meta name="description" content="What changes when BravePay moves onto BankOne: what we stop building, what we keep, what it takes, and what has to be answered first.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --bg:#F4F6F4; --card:#FFFFFF; --card-2:#E9EEEA;
+  --ink:#121A16; --ink-2:#41504A; --ink-3:#6B7A73;
+  --rule:#DAE2DC; --rule-2:#BECABF;
+  --accent:#1F5240; --accent-2:#2C6E55; --accent-soft:#E3EFE8;
+  --keep:#1F5240; --keep-soft:#E3EFE8;
+  --drop:#8A4B12; --drop-soft:#F6EBDF;
+  --ask:#8E2F3C; --ask-soft:#F7E6E8;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1411; --card:#182019; --card-2:#1F2922;
+    --ink:#E9F0EB; --ink-2:#B4C3BA; --ink-3:#87968C;
+    --rule:#26312A; --rule-2:#3B4A40;
+    --accent:#6FC3A0; --accent-2:#8FD4B6; --accent-soft:#16291F;
+    --keep:#6FC3A0; --keep-soft:#16291F;
+    --drop:#DCA05C; --drop-soft:#2C2116;
+    --ask:#E88E99; --ask-soft:#2E1B1F;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1411; --card:#182019; --card-2:#1F2922;
+  --ink:#E9F0EB; --ink-2:#B4C3BA; --ink-3:#87968C;
+  --rule:#26312A; --rule-2:#3B4A40;
+  --accent:#6FC3A0; --accent-2:#8FD4B6; --accent-soft:#16291F;
+  --keep:#6FC3A0; --keep-soft:#16291F;
+  --drop:#DCA05C; --drop-soft:#2C2116;
+  --ask:#E88E99; --ask-soft:#2E1B1F;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16.5px; line-height:1.64;
+}
+.page{max-width:50rem; margin:0 auto; padding:0 1.2rem 6rem}
+@media (min-width:700px){.page{padding:0 2.2rem 7rem}}
+a{color:var(--accent-2); text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+
+.mast{padding:3.6rem 0 2.2rem; border-bottom:3px double var(--rule-2); margin-bottom:.6rem}
+.eyebrow{font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-2); font-weight:600; margin:0 0 1rem}
+h1{font-family:Spectral,Georgia,serif; font-weight:700; font-size:clamp(2.1rem,6vw,3.3rem); line-height:1.05; letter-spacing:-.02em; margin:0 0 1.1rem; text-wrap:balance; max-width:16ch}
+.deck{font-family:Spectral,Georgia,serif; font-size:clamp(1.1rem,2.5vw,1.35rem); line-height:1.5; color:var(--ink-2); margin:0 0 1.5rem; max-width:44ch}
+.byline{font-size:.82rem; color:var(--ink-3)}
+.nav{display:flex; flex-wrap:wrap; gap:.4rem .9rem; margin:1.4rem 0 0; font-size:.8rem}
+.nav a{color:var(--ink-3); text-decoration:none; border-bottom:1px solid transparent}
+.nav a:hover{color:var(--accent-2); border-bottom-color:var(--accent-2)}
+
+section{padding:2.8rem 0 .4rem; scroll-margin-top:1rem}
+section+section{border-top:1px solid var(--rule)}
+.sn{font-size:.68rem; letter-spacing:.15em; text-transform:uppercase; color:var(--accent-2); font-weight:600; display:block; margin:0 0 .5rem}
+h2{font-family:Spectral,Georgia,serif; font-weight:600; font-size:clamp(1.5rem,3.6vw,2rem); line-height:1.16; letter-spacing:-.014em; margin:0 0 1rem; text-wrap:balance; max-width:22ch}
+h3{font-family:Spectral,Georgia,serif; font-weight:600; font-size:1.2rem; margin:2.1rem 0 .65rem}
+p{margin:0 0 1.05rem}
+ul,ol{margin:0 0 1.15rem; padding-left:1.25rem}
+li{margin:0 0 .55rem}
+li::marker{color:var(--accent-2)}
+.lead{font-size:1.06rem; color:var(--ink-2)}
+
+.box{margin:1.7rem 0; padding:1.15rem 1.3rem; border-radius:8px; background:var(--card); border:1px solid var(--rule); border-left:4px solid var(--accent)}
+.box h4{font-family:Spectral,serif; font-weight:600; font-size:1.06rem; margin:0 0 .5rem; color:var(--accent-2)}
+.box p:last-child,.box ul:last-child{margin-bottom:0}
+.box.ask{background:var(--ask-soft); border-left-color:var(--ask)}
+.box.ask h4{color:var(--ask)}
+.box.drop{background:var(--drop-soft); border-left-color:var(--drop)}
+.box.drop h4{color:var(--drop)}
+.box.keep{background:var(--keep-soft); border-left-color:var(--keep)}
+.box.keep h4{color:var(--keep)}
+
+.tw{overflow-x:auto; margin:1.5rem 0 1.9rem; border:1px solid var(--rule); border-radius:8px; background:var(--card)}
+table{border-collapse:collapse; width:100%; min-width:520px; font-size:.9rem}
+thead th{text-align:left; font-size:.66rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); font-weight:700; padding:.7rem .9rem; background:var(--card-2); border-bottom:1px solid var(--rule-2); white-space:nowrap}
+tbody th{text-align:left; font-weight:600; padding:.68rem .9rem; vertical-align:top; line-height:1.45}
+tbody td{padding:.68rem .9rem; vertical-align:top; line-height:1.45; color:var(--ink-2)}
+tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--rule)}
+.t-keep{color:var(--keep); font-weight:600}
+.t-drop{color:var(--drop); font-weight:600}
+.t-ask{color:var(--ask); font-weight:600}
+td.n{font-variant-numeric:tabular-nums; white-space:nowrap}
+
+.two{display:grid; gap:1rem; margin:1.7rem 0 2rem}
+@media (min-width:640px){.two{grid-template-columns:1fr 1fr}}
+.pane{background:var(--card); border:1px solid var(--rule); border-radius:8px; padding:1.1rem 1.2rem}
+.pane h4{margin:0 0 .65rem; font-family:Spectral,serif; font-size:1.05rem; font-weight:600}
+.pane.keep h4{color:var(--keep)} .pane.drop h4{color:var(--drop)}
+.pane ul{margin:0; padding-left:1.1rem}
+.pane li{font-size:.93rem; color:var(--ink-2); margin-bottom:.4rem}
+
+.phases{list-style:none; margin:1.6rem 0 2rem; padding:0; counter-reset:ph}
+.phases li{counter-increment:ph; display:grid; grid-template-columns:2.4rem 1fr; gap:.9rem; padding:.85rem 0; border-top:1px solid var(--rule)}
+.phases li:first-child{border-top:0}
+.phases li::before{content:counter(ph); font-family:Spectral,serif; font-size:1.35rem; font-weight:600; color:var(--accent-2); line-height:1.1}
+.phases .ph-t{font-weight:600; display:block}
+.phases .ph-d{font-size:.9rem; color:var(--ink-2); display:block; margin-top:.1rem}
+.phases .ph-w{font-size:.78rem; color:var(--ink-3); display:block; margin-top:.25rem}
+
+.pull{font-family:Spectral,Georgia,serif; font-size:clamp(1.25rem,3.2vw,1.6rem); line-height:1.34; color:var(--accent-2); border-top:1px solid var(--rule-2); border-bottom:1px solid var(--rule-2); padding:1.4rem 0; margin:2.2rem 0; text-wrap:balance}
+
+figure{margin:2rem 0 2.2rem}
+figure svg{display:block; width:100%; height:auto; color:var(--ink)}
+figcaption{margin-top:.8rem; font-size:.87rem; color:var(--ink-3); line-height:1.5}
+.scroll{overflow-x:auto}.scroll svg{min-width:540px}
+
+footer{margin-top:3.6rem; padding-top:1.9rem; border-top:3px double var(--rule-2); font-size:.86rem; color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="mast">
+  <p class="eyebrow">BravePay · the plan, without the code</p>
+  <h1>Building BravePay on BankOne</h1>
+  <p class="deck">What we stop building, what stays ours, roughly what it takes, and the three questions that have to be answered before anyone writes a line of it.</p>
+  <p class="byline">3 September 2026 · for product, operations and management</p>
+  <p class="nav">
+    <a href="#decision">The decision</a>
+    <a href="#line">Who owns what</a>
+    <a href="#free">What we get free</a>
+    <a href="#build">What we still build</a>
+    <a href="#shape">Three things that shape the work</a>
+    <a href="#modules">What happens to each part</a>
+    <a href="#wrong">When things go wrong</a>
+    <a href="#phases">How it gets delivered</a>
+    <a href="#risks">Risks</a>
+    <a href="#first">Answer these first</a>
+  </p>
+</header>
+
+<section id="decision">
+<span class="sn">The decision</span>
+<h2>What we are actually choosing</h2>
+<p class="lead">BankOne becomes the engine that holds accounts, balances and the official record of every naira. BravePay becomes the product that customers use.</p>
+<p>Put plainly: <strong>we stop trying to be a bank's back office and go back to being a very good bank's front end.</strong> That is not a retreat. The back office is expensive, heavily regulated, and identical at every institution. The front end is the only part customers ever choose between.</p>
+
+<p class="pull">BankOne owns the money. BravePay owns everything that is not money.</p>
+
+<p>This is the sentence to remember. Almost every question that comes up during the project — should this live here or there, who is responsible when something breaks, what do we build next — answers itself against that line.</p>
+
+<div class="box">
+  <h4>Why the line falls exactly there</h4>
+  <p>Three reasons, and they reinforce each other. BankOne holds the licence-grade ledger and files the regulator's monthly returns. Settlement between banks happens at institution level, not app level, so it was never going to be ours. And our current internal record of balances would not survive an examination — it was built as a product feature, not as a bank's books.</p>
+</div>
+</section>
+
+<section id="line">
+<span class="sn">Ownership</span>
+<h2>Who owns what</h2>
+
+<div class="tw">
+<table>
+<thead><tr><th scope="col">Thing</th><th scope="col">Owner</th><th scope="col">Why</th></tr></thead>
+<tbody>
+<tr><th scope="row">Login, PIN, fingerprint, devices</th><td class="t-keep">BravePay</td><td>Not a banking function. The engine has no idea what a phone session is.</td></tr>
+<tr><th scope="row">Account numbers</th><td class="t-drop">BankOne</td><td>Only a licensed core can issue a number other banks will route money to.</td></tr>
+<tr><th scope="row">Balances</th><td class="t-drop">BankOne</td><td>One writer, always. Two systems writing the same number is how money goes missing.</td></tr>
+<tr><th scope="row">The official ledger</th><td class="t-drop">BankOne</td><td>What an auditor asks to see. We do not have one today.</td></tr>
+<tr><th scope="row">Transfers between banks</th><td class="t-drop">BankOne</td><td>It holds the national connection. We inherit it.</td></tr>
+<tr><th scope="row">What the customer asked for</th><td class="t-keep">BravePay</td><td>Only we know someone <em>tried</em>. This record is what lets us chase an unclear outcome.</td></tr>
+<tr><th scope="row">Invoicing, payroll, expenses, budgets</th><td class="t-keep">BravePay</td><td>Business tools. The engine offers nothing here and should not.</td></tr>
+<tr><th scope="row">Notifications</th><td class="t-keep">BravePay</td><td>Already ours and working well.</td></tr>
+<tr><th scope="row">Fraud rules</th><td class="t-keep">BravePay</td><td>Only we see the device, the session and the behaviour.</td></tr>
+<tr><th scope="row">Freezing an account, holding funds</th><td class="t-drop">BankOne</td><td>We decide <em>when</em>; the engine does the <em>doing</em>.</td></tr>
+<tr><th scope="row">Monthly reports to CBN and NDIC</th><td class="t-drop">BankOne</td><td>Built for Nigerian microfinance banks already. Rebuilding would be waste.</td></tr>
+<tr><th scope="row">Checking the books agree</th><td class="t-keep">BravePay</td><td>Nobody does this for us. It is the single most important thing we build.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="free">
+<span class="sn">What we gain</span>
+<h2>Capability we get without building it</h2>
+<p>Everything below already exists and works today for hundreds of institutions. On the day we go live, it is available to us.</p>
+
+<div class="two">
+  <div class="pane keep">
+    <h4>Core banking</h4>
+    <ul>
+      <li>Real account numbers</li>
+      <li>Balances and a proper ledger</li>
+      <li>Transfers within and between banks</li>
+      <li>Account statements</li>
+      <li>Regulatory returns</li>
+    </ul>
+  </div>
+  <div class="pane keep">
+    <h4>Products we do not have yet</h4>
+    <ul>
+      <li>Debit cards, issued properly</li>
+      <li>Loans, with repayment schedules</li>
+      <li>Fixed deposits</li>
+      <li>Standing orders and overdrafts</li>
+      <li>Freezing, holds and restrictions</li>
+    </ul>
+  </div>
+</div>
+
+<p>The second column is worth pausing on. Cards, loans and fixed deposits are not stretch goals we are deferring — <strong>they arrive as part of the platform.</strong> What we build is the customer-facing product around them, which is a matter of weeks rather than the years it would take to build the underlying banking.</p>
+
+<div class="box keep">
+  <h4>A side benefit worth naming</h4>
+  <p>We currently store card details ourselves. Moving cards onto the platform removes that from our systems entirely — which removes a large, expensive compliance burden along with it. This is one of the clearest wins in the whole move.</p>
+</div>
+</section>
+
+<section id="build">
+<span class="sn">What is ours</span>
+<h2>What we still have to build</h2>
+<p>Five things. This is the honest scope of work.</p>
+
+<ol>
+  <li><strong>The connection itself.</strong> A single, well-controlled link between our systems and the banking engine, through which everything passes.</li>
+  <li><strong>A record of every instruction.</strong> Written down before anything is sent, so an unclear outcome can always be chased to a definite answer.</li>
+  <li><strong>Checking for incoming money.</strong> Because nothing tells us automatically — see below.</li>
+  <li><strong>Daily reconciliation.</strong> Comparing our records against the engine's, every day, and raising anything that does not match.</li>
+  <li><strong>Reporting and insight.</strong> Spending categories, trends, business intelligence. The engine holds the data; making it useful is ours.</li>
+</ol>
+
+<p>Notice what is <em>not</em> on that list: ledgers, account numbers, settlement, card issuance, regulatory filing. That is the trade we are making, and it is a good one.</p>
+</section>
+
+<section id="shape">
+<span class="sn">Constraints</span>
+<h2>Three things that shape the work</h2>
+<p>Most of the effort and most of the risk trace back to these. They are worth understanding even if the detail is not.</p>
+
+<h3>1 · Nothing tells us when money arrives</h3>
+<p>When someone at another bank sends money to a BravePay customer, it lands correctly and is never at risk. But the banking engine does not notify us — so to alert the customer, our systems have to keep checking.</p>
+<p>Checking every account constantly would be slow and expensive. The workable approach is to check different customers at different rates: people using the app right now get checked every half-minute or so, recently active customers every few minutes, everyone else overnight. Fast alerts for the people most likely to be waiting, without the cost of checking everyone.</p>
+
+<div class="box ask">
+  <h4>This is the most valuable question we can ask</h4>
+  <p>Before building all of that, we are asking our provider directly whether any automatic notification exists. <strong>If yes, a meaningful chunk of work disappears and customers get instant alerts.</strong> If no, we build the checking system. Either way it works — but the answer changes the cost, so we want it before we start.</p>
+</div>
+
+<h3>2 · Every connection has to be the secured kind</h3>
+<p>Connections carrying customer information must be the sealed, scrambled kind rather than the open kind. This protects names, dates of birth, identity numbers and account numbers as they move between systems.</p>
+<p>We treat written confirmation of this as a condition of launch, not an assumption. Two obligations make it non-negotiable: the CBN's cybersecurity rules for institutions like ours have applied since January 2023, and from <strong>1 January 2027</strong> Nigerian payment data must be stored and handled inside Nigeria — a rule that names microfinance banks specifically.</p>
+
+<h3>3 · Every instruction needs a short, unique tag</h3>
+<p>Every transfer carries a short reference. It sounds trivial and it is load-bearing: that tag is how we ask "what happened to this one?" without accidentally causing the payment to happen twice.</p>
+<p>The tag has a strict length limit, and ours are currently too long. Fixing it is quick, but it has to happen before the first transfer is ever attempted.</p>
+</section>
+
+<section id="modules">
+<span class="sn">Impact</span>
+<h2>What happens to each part of BravePay</h2>
+
+<div class="tw">
+<table>
+<thead><tr><th scope="col">Part of the product</th><th scope="col">What happens</th><th scope="col">Notes</th></tr></thead>
+<tbody>
+<tr><th scope="row">Accounts &amp; profiles</th><td class="t-keep">Stays</td><td>Login, PIN, biometrics, customer details — unchanged.</td></tr>
+<tr><th scope="row">Balances &amp; transactions</th><td class="t-drop">Rebuilt</td><td>Becomes a mirror of the engine's record, plus our own log of what customers asked for.</td></tr>
+<tr><th scope="row">Account numbers</th><td class="t-drop">Replaced</td><td>Ours are derived from phone numbers and are not valid bank account numbers. Real ones replace them.</td></tr>
+<tr><th scope="row">Invoicing</th><td class="t-keep">Stays</td><td>Only change: payment confirmation comes from the mirrored record.</td></tr>
+<tr><th scope="row">Payroll</th><td class="t-keep">Stays</td><td>Each employee payment handled separately, so one bad account does not stop the run.</td></tr>
+<tr><th scope="row">Expenses &amp; budgets</th><td class="t-keep">Stays</td><td>No banking dependency at all.</td></tr>
+<tr><th scope="row">Airtime, data, cable, electricity</th><td class="t-ask">Decision needed</td><td>Keep our current supplier, or move to the platform's. Depends on which covers more billers — worth comparing before choosing.</td></tr>
+<tr><th scope="row">Cards</th><td class="t-drop">Replaced</td><td>Real issued cards, and card data leaves our systems.</td></tr>
+<tr><th scope="row">Identity checks</th><td class="t-keep">Stays, extended</td><td>Our existing checks stay; identity verification is added before an account is opened.</td></tr>
+<tr><th scope="row">Notifications</th><td class="t-keep">Stays</td><td>Ours is better than the alternative. Keep it.</td></tr>
+<tr><th scope="row">Admin console</th><td class="t-keep">Stays, extended</td><td>Needs three new screens: exceptions, daily reconciliation, and a full history of any single transaction.</td></tr>
+<tr><th scope="row">Reporting</th><td class="t-ask">To be built</td><td>Currently empty. Built fresh against the mirrored data.</td></tr>
+<tr><th scope="row">Inventory</th><td class="t-ask">Does not exist</td><td>No inventory feature is currently built. If wanted, it is new work with no banking dependency.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="wrong">
+<span class="sn">Operations</span>
+<h2>When things go wrong</h2>
+<p>None of this is exotic. Every bank handles the same situations daily. The difference between a good system and a bad one is whether they were planned for or discovered live.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th scope="col">Situation</th><th scope="col">What happens</th></tr></thead>
+<tbody>
+<tr><th scope="row">Transfer is slow</th><td>We keep asking for the outcome and keep the customer informed. Money stays held, not returned.</td></tr>
+<tr><th scope="row">No answer comes back</th><td>We ask again using the same reference, so it cannot be performed twice.</td></tr>
+<tr><th scope="row">Customer taps send twice</th><td>The second attempt is rejected automatically. Money can only leave once.</td></tr>
+<tr><th scope="row">One employee's account is wrong in a payroll run</th><td>Thirty-nine get paid, one is flagged. The run does not fail.</td></tr>
+<tr><th scope="row">Money went to the wrong bank account</th><td>Once it has left, it cannot be pulled back automatically. Recovery becomes a conversation between two banks — which is why the name check before sending matters so much.</td></tr>
+<tr><th scope="row">Our records disagree with the engine's</th><td>Raised as an exception for a person to investigate. Never quietly corrected.</td></tr>
+<tr><th scope="row">The engine is unreachable</th><td>Instructions queue rather than fail. Customers are told we will complete it shortly.</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box keep">
+  <h4>The rule that prevents most losses</h4>
+  <p><strong>We never give money back to a customer until we know for certain the transfer failed.</strong> Returning it while the outcome is still unclear feels helpful and is how the same money ends up sent twice.</p>
+</div>
+</section>
+
+<section id="phases">
+<span class="sn">Delivery</span>
+<h2>How it gets delivered</h2>
+<p>Ten stages, ordered so the things most likely to change the plan are settled before serious work begins. Durations assume a small team working alongside normal product work — they are estimates, not commitments.</p>
+
+<ol class="phases">
+  <li><span class="ph-t">Onboarding and access</span><span class="ph-d">Commercial sign-off, accounts, credentials, test access.</span><span class="ph-w">2–3 weeks</span></li>
+  <li><span class="ph-t">Test environment</span><span class="ph-d">Build the connection, exercise every feature once, get the three key questions answered in writing.</span><span class="ph-w">3–4 weeks</span></li>
+  <li><span class="ph-t">Customers and accounts</span><span class="ph-d">Real account numbers for new signups. Our old numbering is retired.</span><span class="ph-w">4–5 weeks</span></li>
+  <li><span class="ph-t">Bank lookups</span><span class="ph-d">Checking who owns an account before money is sent.</span><span class="ph-w">2 weeks</span></li>
+  <li><span class="ph-t">Transfers</span><span class="ph-d">Within BravePay first, then to other banks.</span><span class="ph-w">5–6 weeks</span></li>
+  <li><span class="ph-t">Outcomes and checking</span><span class="ph-d">Handling unclear results automatically; detecting incoming money.</span><span class="ph-w">3–4 weeks</span></li>
+  <li><span class="ph-t">Reconciliation</span><span class="ph-d">Daily book-checking and the exception queue for operations.</span><span class="ph-w">4–5 weeks</span></li>
+  <li><span class="ph-t">Security testing</span><span class="ph-d">Independent testing of the whole integration.</span><span class="ph-w">3 weeks</span></li>
+  <li><span class="ph-t">Sign-off and training</span><span class="ph-d">Provider approval, live credentials, runbooks, staff training.</span><span class="ph-w">3–4 weeks</span></li>
+  <li><span class="ph-t">Going live</span><span class="ph-d">Staff first, then a rising share of customers, with the books checked clean at each step.</span><span class="ph-w">4–6 weeks</span></li>
+</ol>
+
+<div class="box">
+  <h4>How we go live without a bad weekend</h4>
+  <p>Nothing flips at once. First we <strong>read</strong> from the engine and compare against our own figures for a week without acting on them. Then <strong>new customers only</strong>, so any problem touches the fewest people. Then transfers, cheapest and most recoverable type first. Only then does the old system stop being used — a deliberate, dated decision with a rehearsed way back.</p>
+</div>
+</section>
+
+<section id="risks">
+<span class="sn">Risks</span>
+<h2>What could derail this</h2>
+
+<div class="tw">
+<table>
+<thead><tr><th scope="col">Risk</th><th scope="col">Why it matters</th><th scope="col">How we handle it</th></tr></thead>
+<tbody>
+<tr><th scope="row">No automatic notification of incoming money</th><td>More work, more cost, slower alerts to customers.</td><td>Question one to the provider. Design accommodates either answer.</td></tr>
+<tr><th scope="row">Data stored outside Nigeria</th><td>Fails the January 2027 rule.</td><td>Confirm hosting location during onboarding, not later.</td></tr>
+<tr><th scope="row">Both systems writing balances at once</th><td>The classic way money goes missing in a migration.</td><td>Our ability to write balances is removed entirely at cutover.</td></tr>
+<tr><th scope="row">Moving old data across</th><td>Historic records must survive the move intact.</td><td>Dual-running and verification before anything is switched off.</td></tr>
+<tr><th scope="row">Operations not ready</th><td>A reconciliation queue nobody can work is worse than none.</td><td>Training and runbooks are a stage, not an afterthought.</td></tr>
+<tr><th scope="row">Credentials expiring unnoticed</th><td>Total outage, without warning.</td><td>Expiry tracked and alerted like any other production dependency.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="first">
+<span class="sn">Next</span>
+<h2>Answer these first</h2>
+<p>Three questions to our provider, in writing. Everything else can proceed while we wait — but stage three should not begin until these are answered.</p>
+<ol>
+  <li><strong>Is there any way to be told automatically when money arrives?</strong> Changes how much we build and how quickly customers are alerted.</li>
+  <li><strong>Is every live connection the secured kind?</strong> Confirmed in writing before we handle real customer data.</li>
+  <li><strong>Where is our data physically stored?</strong> From 1 January 2027 it has to be Nigeria.</li>
+</ol>
+
+<div class="box">
+  <h4>If you only remember one thing</h4>
+  <p>We are buying the parts of a bank that are identical everywhere and expensive to build, so we can spend our time on the parts customers actually choose between. The work that remains genuinely ours — the app, the business tools, the insight, and knowing our books are right — is exactly the work worth doing.</p>
+</div>
+</section>
+
+<footer>
+<p>A companion briefing, <a href="./">How BravePay Moves Money</a>, explains the same arrangement from scratch for readers with no background at all. A longer technical document covering implementation detail is maintained separately for the engineering team.</p>
+<p>Anything not yet confirmed with our providers is flagged here as an open question rather than presented as fact. Prepared 3 September 2026.</p>
+</footer>
+
+</div>
+</body>
+</html>

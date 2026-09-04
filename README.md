@@ -10,11 +10,14 @@ how it connects to Nigeria's inter-bank payment infrastructure.
 | **The BravePay Platform** | Management — the whole product, not just banking | https://dexter-nigeria.github.io/how-bravepay-moves-money/report.html |
 | **How BravePay Moves Money** | Anyone, no background needed | https://dexter-nigeria.github.io/how-bravepay-moves-money/ |
 | **Building BravePay on BankOne** | Product, operations, management | https://dexter-nigeria.github.io/how-bravepay-moves-money/plan.html |
+| **Build or Buy the Core** | Anyone asking why we don't build it ourselves | https://dexter-nigeria.github.io/how-bravepay-moves-money/build.html |
 
 Three levels of the same story. The **report** covers all five systems, what is built,
 what is measured and what comes next. The **explainer** starts from zero and describes
 how money moves. The **plan** covers what changes when we move onto a core banking
-platform, what it takes and what has to be answered first.
+platform, what it takes and what has to be answered first. The **decision note**
+costs out building a core banking system ourselves — scope, team, timeline and the
+four things money cannot compress.
 
 ## Who it's for
 

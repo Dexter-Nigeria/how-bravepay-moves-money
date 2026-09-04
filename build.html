@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build or Buy the Core</title>
+<meta name="description" content="What it would actually take for BravePay to build its own core banking system: scope, team, timeline, cost, and the four things money cannot compress.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --paper:#F7F6F3; --card:#FFFFFF; --card-2:#EDEBE6;
+  --ink:#141412; --ink-2:#474540; --ink-3:#75726A;
+  --rule:#DFDCD4; --rule-2:#C3BFB4;
+  --buy:#1D6B45; --buy-soft:#E3EFE7; --buy-line:#1D6B45;
+  --build:#9A4A16; --build-soft:#F6EADF; --build-line:#9A4A16;
+  --accent:#141412; --accent-2:#3A3833;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121210; --card:#1B1B18; --card-2:#232320;
+    --ink:#F0EFEA; --ink-2:#BAB7AE; --ink-3:#8B8880;
+    --rule:#2A2A26; --rule-2:#413F39;
+    --buy:#6ECB9B; --buy-soft:#17291F; --buy-line:#6ECB9B;
+    --build:#E0A063; --build-soft:#2C2016; --build-line:#E0A063;
+    --accent:#F0EFEA; --accent-2:#CFCCC4;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121210; --card:#1B1B18; --card-2:#232320;
+  --ink:#F0EFEA; --ink-2:#BAB7AE; --ink-3:#8B8880;
+  --rule:#2A2A26; --rule-2:#413F39;
+  --buy:#6ECB9B; --buy-soft:#17291F; --buy-line:#6ECB9B;
+  --build:#E0A063; --build-soft:#2C2016; --build-line:#E0A063;
+  --accent:#F0EFEA; --accent-2:#CFCCC4;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0; background:var(--paper); color:var(--ink);
+  font-family:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16.5px; line-height:1.63;}
+.page{max-width:49rem; margin:0 auto; padding:0 1.2rem 6rem}
+@media (min-width:700px){.page{padding:0 2.3rem 7rem}}
+a{color:var(--ink); text-decoration-thickness:1px; text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--ink); outline-offset:3px; border-radius:2px}
+
+.mast{padding:3.8rem 0 2.2rem; border-bottom:1px solid var(--ink); margin-bottom:.5rem}
+.eyebrow{font-size:.7rem; letter-spacing:.19em; text-transform:uppercase; color:var(--ink-3); font-weight:700; margin:0 0 1.1rem}
+h1{font-family:Petrona,Georgia,serif; font-weight:600; font-size:clamp(2.4rem,7.5vw,4.1rem); line-height:1; letter-spacing:-.025em; margin:0 0 1.1rem; text-wrap:balance; max-width:13ch}
+.deck{font-family:Petrona,Georgia,serif; font-size:clamp(1.15rem,2.7vw,1.45rem); line-height:1.45; color:var(--ink-2); margin:0 0 1.6rem; max-width:44ch}
+.meta{font-size:.79rem; color:var(--ink-3)}
+
+.verdict{margin:2.2rem 0 2.6rem; padding:1.5rem 1.6rem; background:var(--card); border:1px solid var(--rule); border-radius:10px; border-top:5px solid var(--buy-line)}
+.verdict .vl{font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--buy); margin:0 0 .6rem}
+.verdict p{font-family:Petrona,serif; font-size:clamp(1.2rem,3vw,1.5rem); line-height:1.35; margin:0; text-wrap:balance}
+
+section{padding:2.9rem 0 .4rem; scroll-margin-top:1rem}
+section+section{border-top:1px solid var(--rule)}
+.sn{font-size:.67rem; letter-spacing:.17em; text-transform:uppercase; color:var(--ink-3); font-weight:700; display:block; margin:0 0 .5rem}
+h2{font-family:Petrona,Georgia,serif; font-weight:600; font-size:clamp(1.55rem,4vw,2.15rem); line-height:1.12; letter-spacing:-.018em; margin:0 0 1rem; text-wrap:balance; max-width:22ch}
+h3{font-family:Petrona,Georgia,serif; font-weight:600; font-size:1.25rem; margin:2.1rem 0 .65rem}
+p{margin:0 0 1.05rem}
+ul,ol{margin:0 0 1.15rem; padding-left:1.25rem}
+li{margin:0 0 .5rem}
+.lead{font-size:1.07rem; color:var(--ink-2)}
+strong{font-weight:700}
+
+.box{margin:1.7rem 0; padding:1.15rem 1.3rem; border-radius:8px; background:var(--card); border:1px solid var(--rule); border-left:4px solid var(--ink)}
+.box h4{font-family:Petrona,serif; font-weight:600; font-size:1.08rem; margin:0 0 .5rem}
+.box p:last-child,.box ul:last-child{margin-bottom:0}
+.box.buy{border-left-color:var(--buy-line); background:var(--buy-soft)}
+.box.buy h4{color:var(--buy)}
+.box.build{border-left-color:var(--build-line); background:var(--build-soft)}
+.box.build h4{color:var(--build)}
+
+.tw{overflow-x:auto; margin:1.5rem 0 1.9rem; border:1px solid var(--rule); border-radius:8px; background:var(--card)}
+table{border-collapse:collapse; width:100%; min-width:540px; font-size:.89rem}
+thead th{text-align:left; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); font-weight:700; padding:.68rem .9rem; background:var(--card-2); border-bottom:1px solid var(--rule-2); white-space:nowrap}
+tbody th{text-align:left; font-weight:700; padding:.66rem .9rem; vertical-align:top; line-height:1.44}
+tbody td{padding:.66rem .9rem; vertical-align:top; line-height:1.44; color:var(--ink-2)}
+tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--rule)}
+td.n{font-variant-numeric:tabular-nums; white-space:nowrap}
+.hard{color:var(--build); font-weight:700}
+.mod{color:var(--ink-3); font-weight:600}
+
+.roles{list-style:none; margin:1.5rem 0 1.9rem; padding:0; border:1px solid var(--rule); border-radius:8px; background:var(--card); overflow:hidden}
+.roles li{display:grid; grid-template-columns:2.6rem 1fr; gap:.85rem; padding:.7rem 1rem; margin:0; border-top:1px solid var(--rule); align-items:baseline}
+.roles li:first-child{border-top:0}
+.roles .c{font-variant-numeric:tabular-nums; font-weight:800; color:var(--ink-3); font-size:.95rem}
+.roles .r{font-weight:600}
+.roles .w{display:block; font-weight:400; font-size:.86rem; color:var(--ink-3); margin-top:.05rem}
+
+figure{margin:2rem 0 2.2rem}
+figure svg{display:block; width:100%; height:auto; color:var(--ink)}
+figcaption{margin-top:.8rem; font-size:.86rem; color:var(--ink-3); line-height:1.5}
+.scroll{overflow-x:auto}.scroll svg{min-width:560px}
+
+.pull{font-family:Petrona,Georgia,serif; font-size:clamp(1.3rem,3.4vw,1.72rem); line-height:1.3; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); padding:1.4rem 0; margin:2.3rem 0; text-wrap:balance}
+
+.cond{counter-reset:cd; list-style:none; padding:0; margin:1.5rem 0 1.8rem}
+.cond li{counter-increment:cd; display:grid; grid-template-columns:2rem 1fr; gap:.8rem; padding:.7rem 0; border-top:1px solid var(--rule)}
+.cond li:first-child{border-top:0}
+.cond li::before{content:counter(cd); font-family:Petrona,serif; font-size:1.3rem; font-weight:600; color:var(--ink-3); line-height:1}
+
+footer{margin-top:3.6rem; padding-top:1.9rem; border-top:1px solid var(--ink); font-size:.85rem; color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="mast">
+  <p class="eyebrow">BravePay · decision note</p>
+  <h1>Build or buy the core</h1>
+  <p class="deck">What it would actually take to build our own core banking system instead of renting one — scope, team, time, cost, and the parts no budget can shorten.</p>
+  <p class="meta">3 September 2026 · prepared in response to the question directly</p>
+</header>
+
+<div class="verdict">
+  <p class="vl">Recommendation</p>
+  <p>Buy the core. Keep our own complete copy of our financial history so that leaving later stays possible — and revisit the question at around 100,000 active accounts.</p>
+</div>
+
+<section id="headline">
+<span class="sn">01</span>
+<h2>The headline number</h2>
+<p class="lead">Roughly <strong>300–400 person-months</strong> of engineering, <strong>24–36 months</strong> elapsed, a team of <strong>11–13</strong> — and that is only about 40% of the job.</p>
+<p>The software is the part everyone estimates. Certification, the compliance regime, and operational track record are what actually decide whether you can go live, and none of them compress no matter how good the engineers are.</p>
+<p>This note takes the question seriously rather than dismissing it. The scope below is taken from what a core banking platform actually ships — seventeen functional areas — so the comparison is like for like.</p>
+</section>
+
+<section id="scope">
+<span class="sn">02</span>
+<h2>What you would be building</h2>
+
+<div class="tw">
+<table>
+<thead><tr><th scope="col">Area</th><th scope="col">What it covers</th><th scope="col">Difficulty</th></tr></thead>
+<tbody>
+<tr><th scope="row">The ledger</th><td>Financial accounting, chart of accounts, double-entry postings, end-of-day / month / year automation, depreciation, amortisation, fixed assets</td><td class="hard">Brutal</td></tr>
+<tr><th scope="row">Products</th><td>Current and savings accounts, product configuration, fees, interest and penalties engine</td><td class="hard">Hard</td></tr>
+<tr><th scope="row">Lending</th><td>Loan accounts, loan products, repayment schedules, automated credit assessment</td><td class="hard">Hard</td></tr>
+<tr><th scope="row">Regulatory reporting</th><td>Automated returns to the regulator, plus a report builder for everything else</td><td class="hard">Hard</td></tr>
+<tr><th scope="row">Payments</th><td>Transfers, national payment system integration, switching</td><td class="hard">Hard + gated</td></tr>
+<tr><th scope="row">Cards</th><td>Issuing and card management</td><td class="hard">Hard + drags in PCI</td></tr>
+<tr><th scope="row">Treasury</th><td>Position and liquidity management</td><td class="mod">Moderate</td></tr>
+<tr><th scope="row">Channels</th><td>Web, mobile, USSD, API gateway</td><td class="mod">Moderate — mostly built</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>That last row is the good news: our app, admin console and API layer already exist. We are not starting from nothing. But <strong>roughly 80% of the effort sits in the top four rows, and we have none of it today.</strong></p>
+
+<div class="box build">
+  <h4>Why the ledger is the hard one</h4>
+  <p>It must never lose a transaction, must close cleanly every single night without exception, and must be able to reconstruct any historical position on demand years later. It is not a hard <em>algorithm</em> — it is a system where a rare bug is a financial loss and an audit finding rather than a support ticket. That changes how it has to be built, tested and staffed.</p>
+</div>
+</section>
+
+<section id="team">
+<span class="sn">03</span>
+<h2>The team</h2>
+<p>Not generalists. This needs people who have built a ledger before, and they are scarce and expensive in every market.</p>
+
+<ul class="roles">
+  <li><span class="c">2</span><span class="r">Core ledger engineers <span class="w">Senior. The hardest hire on this list, by some distance.</span></span></li>
+  <li><span class="c">2</span><span class="r">Product and lending engineers <span class="w">Interest accrual and restructuring are where correctness bugs hide.</span></span></li>
+  <li><span class="c">1</span><span class="r">Regulatory reporting engineer <span class="w">Unglamorous, permanent, and the formats keep changing.</span></span></li>
+  <li><span class="c">1</span><span class="r">Payments integration engineer <span class="w">Owns certification with the national payment system.</span></span></li>
+  <li><span class="c">1</span><span class="r">Cards engineer <span class="w">Brings a card compliance regime with them.</span></span></li>
+  <li><span class="c">2</span><span class="r">QA engineers <span class="w">Financial correctness testing, not click-testing.</span></span></li>
+  <li><span class="c">1</span><span class="r">Infrastructure and reliability <span class="w">The batch has to run every night, forever.</span></span></li>
+  <li><span class="c">1</span><span class="r">Security engineer <span class="w">Continuous, not a pre-launch review.</span></span></li>
+  <li><span class="c">1</span><span class="r">Banking business analyst <span class="w">Someone who has actually filed a regulatory return.</span></span></li>
+  <li><span class="c">1</span><span class="r">Engineering lead <span class="w">Architecture and the regulator-facing conversations.</span></span></li>
+</ul>
+
+<div class="box build">
+  <h4>The role most often skipped, and most often fatal</h4>
+  <p>The banking analyst. Without someone who has worked inside a microfinance bank and filed its returns, engineers will build the wrong thing confidently and only discover it at examination. This is not a role to backfill later.</p>
+</div>
+</section>
+
+<section id="time">
+<span class="sn">04</span>
+<h2>How the time goes</h2>
+
+<figure class="scroll">
+<svg viewBox="0 0 640 210" role="img" aria-label="Timeline of a build: ledger core in months one to six with nothing demoable, then products and lending, then reporting and certification, then hardening and parallel running, then audit and migration ending around month 36.">
+  <g font-family="Manrope, sans-serif" font-size="11" fill="currentColor">
+    <line x1="10" y1="176" x2="630" y2="176" stroke="currentColor" stroke-width="1.2"/>
+    <g font-size="9.5" fill="currentColor" opacity=".6">
+      <text x="10" y="194">month 0</text>
+      <text x="180" y="194" text-anchor="middle">12</text>
+      <text x="350" y="194" text-anchor="middle">24</text>
+      <text x="620" y="194" text-anchor="end">36</text>
+    </g>
+    <line x1="10" y1="170" x2="10" y2="182" stroke="currentColor" stroke-width="1.2"/>
+    <line x1="180" y1="170" x2="180" y2="182" stroke="currentColor" stroke-width="1.2"/>
+    <line x1="350" y1="170" x2="350" y2="182" stroke="currentColor" stroke-width="1.2"/>
+    <line x1="620" y1="170" x2="620" y2="182" stroke="currentColor" stroke-width="1.2"/>
+
+    <rect x="10" y="18" width="95" height="24" rx="4" fill="#9A4A16" opacity=".9"/>
+    <text x="115" y="34" font-size="10.5">Ledger core — nothing demoable</text>
+
+    <rect x="95" y="48" width="140" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text x="245" y="64" font-size="10.5">Products, lending, interest</text>
+
+    <rect x="180" y="78" width="140" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text x="330" y="94" font-size="10.5">Reporting, certification, cards</text>
+
+    <rect x="285" y="108" width="165" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <text x="460" y="124" font-size="10.5">Hardening, parallel running</text>
+
+    <rect x="390" y="138" width="230" height="24" rx="4" fill="#1D6B45" opacity=".85"/>
+    <text x="505" y="154" font-size="10.5" text-anchor="middle" fill="#FFFFFF">Audit · testing · sign-off · migration</text>
+
+    <line x1="105" y1="16" x2="105" y2="176" stroke="#9A4A16" stroke-width="1" stroke-dasharray="3 3" opacity=".55"/>
+    <text x="112" y="12" font-size="9" fill="#9A4A16">first six months: no visible progress</text>
+  </g>
+</svg>
+<figcaption>The first block is where these projects die politically rather than technically. Six months of spend with nothing to demonstrate is difficult to defend, and the temptation to cut it short is exactly what produces a ledger that fails its first examination.</figcaption>
+</figure>
+
+<p>Anyone quoting twelve months is quoting the happy path for the software and quietly ignoring certification.</p>
+</section>
+
+<section id="cost">
+<span class="sn">05</span>
+<h2>The money</h2>
+<p>Take your fully-loaded engineering cost, multiply by roughly 350 person-months, then add everything below — which is the part that gets left out of the first estimate.</p>
+
+<div class="tw">
+<table>
+<thead><tr><th scope="col">Beyond salaries</th><th scope="col">Nature</th></tr></thead>
+<tbody>
+<tr><th scope="row">Payment system certification and connection</th><td>One-off, plus recurring fees</td></tr>
+<tr><th scope="row">Settlement collateral</th><td>Real capital, tied up indefinitely</td></tr>
+<tr><th scope="row">Card compliance audit</th><td>Annual, by an external assessor, forever</td></tr>
+<tr><th scope="row">Data centre or cloud presence in Nigeria</th><td>Recurring — required from January 2027 either way</td></tr>
+<tr><th scope="row">Independent security testing</th><td>Annual, and after significant change</td></tr>
+<tr><th scope="row">24/7 operations staffing</th><td>Recurring — the nightly close has to be watched</td></tr>
+<tr><th scope="row">External audit of the ledger</th><td>Recurring</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box buy">
+  <h4>The comparison is not close</h4>
+  <p>Vendor core banking at our scale is priced per institution and per user, in the region of a few thousand dollars to implement and a modest monthly fee thereafter. <strong>Even at ten times whatever we are quoted, buying is cheaper by orders of magnitude</strong> — and the gap widens once the recurring costs above are counted. Current pricing should be taken from a live quote rather than from this note.</p>
+</div>
+</section>
+
+<section id="uncompressible">
+<span class="sn">06</span>
+<h2>Four things money cannot compress</h2>
+
+<ol class="cond">
+  <li><span><strong>Examiner confidence.</strong> A regulator's examiner has seen the major platforms at hundreds of institutions. They have never seen ours. Every examination becomes an argument about our ledger instead of a conversation about our business.</span></li>
+  <li><span><strong>Track record.</strong> "Our nightly close has run cleanly for four years" is something that can only be earned by waiting four years.</span></li>
+  <li><span><strong>Certification.</strong> Connecting to the national payment system is a queue and a process. Money does not move it.</span></li>
+  <li><span><strong>Operational maturity.</strong> Someone has to be awake at two in the morning when the batch fails, and know what to do.</span></li>
+</ol>
+</section>
+
+<section id="opportunity">
+<span class="sn">07</span>
+<h2>The argument that actually decides it</h2>
+
+<p class="pull">Nobody has ever chosen a bank because its general ledger was built in-house.</p>
+
+<p>Twelve engineers on core banking for three years is twelve engineers <strong>not</strong> building invoicing, payroll, expense tracking and the customer experience — the only parts of BravePay that a customer weighs against an alternative.</p>
+<p>That is the real cost, and it does not appear on any budget line. The build is not just expensive; it is expensive in exactly the resource that produces our differentiation.</p>
+</section>
+
+<section id="narrow">
+<span class="sn">08</span>
+<h2>The narrower question worth asking</h2>
+
+<p>"Should we build a core banking system" is almost always no. A better question is: <strong>should we own the ledger and rent the rails?</strong></p>
+<p>That is a genuine option — roughly 30 to 40% of the scope. Our own double-entry ledger and product engine, with payments, cards and regulatory reporting still bought in. Some lenders do exactly this, deliberately.</p>
+
+<div class="box build">
+  <h4>Still no, for one specific reason</h4>
+  <p>The ledger is precisely the component a regulator scrutinises hardest, and we are a deposit-taking institution. A lender not holding customer deposits faces a different calculation and might reasonably build. <strong>Holding deposits is what makes the home-made ledger the expensive choice.</strong></p>
+</div>
+</section>
+
+<section id="when">
+<span class="sn">09</span>
+<h2>When building does make sense</h2>
+<p>Three conditions. You would want all three before reopening this.</p>
+<ol class="cond">
+  <li><span>Scale where per-user vendor fees exceed the cost of a build team — <strong>hundreds of thousands of accounts, not thousands</strong>.</span></li>
+  <li><span>The vendor is demonstrably blocking products we cannot ship any other way.</span></li>
+  <li><span>We intend to sell core banking to <em>other</em> institutions — becoming a platform rather than a customer of one.</span></li>
+</ol>
+<p>None are true today. The second could become true, which is why the exit path matters more than the decision itself.</p>
+</section>
+
+<section id="do">
+<span class="sn">10</span>
+<h2>What to do instead</h2>
+
+<div class="box buy">
+  <h4>Buy the core, and keep the door open</h4>
+  <p>Proceed with a vendor core, and treat building as a <strong>design constraint rather than a plan</strong>. Concretely: keep our own shadow ledger and our own record of every customer instruction, so that at any moment we hold a complete copy of our own financial history.</p>
+  <p>That is what makes leaving possible later without a hostage negotiation. The cost is small, it improves reconciliation and support regardless, and it is already in the integration plan.</p>
+</div>
+
+<p>Revisit at roughly <strong>100,000 active accounts</strong>, or the first time the vendor blocks a product we are certain about. Until then this is a solved question, and reopening it costs more than it returns.</p>
+</section>
+
+<footer>
+<p>Effort figures are estimates derived from the functional scope a core banking platform ships, not quotes. Vendor pricing should be taken from a current quote rather than from this note. Companion briefings: <a href="./report.html">The BravePay Platform</a> · <a href="./">How BravePay Moves Money</a> · <a href="./plan.html">Building BravePay on BankOne</a></p>
+</footer>
+
+</div>
+</body>
+</html>
